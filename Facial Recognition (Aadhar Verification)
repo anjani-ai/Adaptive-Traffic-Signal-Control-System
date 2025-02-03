@@ -1,0 +1,16 @@
+from deepface import DeepFace
+import cv2
+
+# Load captured image from traffic camera
+input_img = cv2.imread("driver_face.jpg")
+
+# Compare with Aadhar database images
+db_faces = ["aadhar_face_1.jpg", "aadhar_face_2.jpg"]  # Sample Aadhar photos
+
+for face in db_faces:
+    result = DeepFace.verify(input_img, face, model_name="Facenet")
+    if result["verified"]:
+        print(f"Face Matched with {face} (Aadhar Verified)")
+        break
+else:
+    print("No Aadhar Match Found. Possible Traffic Violation!")
