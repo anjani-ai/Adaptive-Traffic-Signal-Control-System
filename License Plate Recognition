@@ -1,0 +1,25 @@
+import cv2
+import easyocr
+import torch
+from ultralytics import YOLO
+
+# Load YOLOv8 model for license plate detection
+model = YOLO("yolov8n.pt")
+
+# Load image
+image = cv2.imread("traffic_image.jpg")
+
+# Run YOLO detection
+results = model(image)
+
+# Extract detected license plate region
+for result in results:
+    for box in result.boxes:
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
+        license_plate = image[y1:y2, x1:x2]
+        cv2.imwrite("license_plate.jpg", license_plate)
+
+# OCR to extract text
+reader = easyocr.Reader(["en"])
+plate_number = reader.readtext("license_plate.jpg", detail=0)
+print("Detected License Plate:", plate_number)
