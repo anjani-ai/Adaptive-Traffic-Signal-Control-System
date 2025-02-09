@@ -1,0 +1,17 @@
+from fastapi import FastAPI, UploadFile, File
+import cv2
+import numpy as np
+from ultralytics import YOLO
+
+app = FastAPI()
+model = YOLO("custom_yolo_model.pt")  # AI model to detect violations
+
+@app.post("/detect/")
+async def detect_violations(file: UploadFile = File(...)):
+    image = np.frombuffer(await file.read(), np.uint8)  # Convert image to a format AI understands
+    img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+    results = model(img)  # AI processes the image and finds violations
+    detected_objects = results.pandas().xyxy[0].to_dict(orient="records")  # Extract detected objects
+
+    return {"detections": detected_objects}  # Return the results
