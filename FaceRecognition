@@ -1,0 +1,8 @@
+import face_recognition
+
+def match_face(image):
+    known_faces = load_known_aadhar_faces()  # Load stored Aadhar-verified faces
+    unknown_encoding = face_recognition.face_encodings(image)[0]
+    
+    results = face_recognition.compare_faces(known_faces, unknown_encoding)
+    return results
