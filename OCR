@@ -1,0 +1,6 @@
+import pytesseract
+
+def extract_license_plate(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert image to black and white
+    plate_text = pytesseract.image_to_string(gray)  # AI tries to read the text
+    return plate_text.strip()  # Return the detected number
